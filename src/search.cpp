@@ -622,7 +622,7 @@ Value Search::Worker::search(
     posKey                         = pos.key();
     auto [ttHit, ttData, ttWriter] = tt.probe(posKey);
     // Need further processing of the saved data
-    ss->ttHit    = ttHit;
+    ss->ttHit    = ttHit && pos.pseudo_legal(ttData.move);
     ttData.move  = rootNode ? thisThread->rootMoves[thisThread->pvIdx].pv[0]
                  : ttHit    ? ttData.move
                             : Move::none();
