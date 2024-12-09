@@ -622,7 +622,8 @@ Value Search::Worker::search(
     posKey                         = pos.key();
     auto [ttHit, ttData, ttWriter] = tt.probe(posKey);
     // Need further processing of the saved data
-    ss->ttHit    = ttHit && (!ttData.move || pos.pseudo_legal(ttData.move));
+    ttHit = ttHit && (!ttData.move || pos.pseudo_legal(ttData.move));
+    ss->ttHit    = ttHit;
     ttData.move  = rootNode ? thisThread->rootMoves[thisThread->pvIdx].pv[0]
                  : ttHit    ? ttData.move
                             : Move::none();
@@ -1520,6 +1521,7 @@ Value Search::Worker::qsearch(Position& pos, Stack* ss, Value alpha, Value beta)
     posKey                         = pos.key();
     auto [ttHit, ttData, ttWriter] = tt.probe(posKey);
     // Need further processing of the saved data
+    ttHit = ttHit && (!ttData.move || pos.pseudo_legal(ttData.move));
     ss->ttHit    = ttHit;
     ttData.move  = ttHit ? ttData.move : Move::none();
     ttData.value = ttHit ? value_from_tt(ttData.value, ss->ply, pos.rule50_count()) : VALUE_NONE;
